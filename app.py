@@ -25,6 +25,8 @@ def home():
 @app.route("/callback", methods=["POST"])
 def callback():
 
+    print("★★★★ callback called ★★★★")
+
     body = request.json
 
     print(body)
@@ -331,10 +333,10 @@ def callback():
         }
 
         requests.post(
-            "https://api.line.me/v2/bot/message/reply",
-            headers=headers,
-            json=data
-        )
+        "https://api.line.me/v2/bot/message/reply",
+        headers=headers,
+        json=data
+    )
 
     return "OK"
 
