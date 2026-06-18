@@ -1,0 +1,343 @@
+from flask import Flask, request
+import requests
+import google.generativeai as genai
+
+from config import ACCESS_TOKEN, GEMINI_API_KEY, MODEL_NAME
+from prompts import *
+from tarot import draw_tarot
+from storage import *
+
+app = Flask(__name__)
+
+genai.configure(api_key=GEMINI_API_KEY)
+
+model = genai.GenerativeModel(MODEL_NAME)
+
+# ユーザー状態
+user_states = {}
+
+
+@app.route("/")
+def home():
+    return "Fortune AI Running"
+
+
+@app.route("/callback", methods=["POST"])
+def callback():
+
+    body = request.json
+
+    print(body)
+
+    events = body.get("events", [])
+
+    for event in events:
+
+        if event["type"] != "message":
+            continue
+
+        user_text = event["message"]["text"]
+        reply_token = event["replyToken"]
+        user_id = event["source"]["userId"]
+
+        reply_text = ""
+        # 恋愛運
+        if user_text == "💕恋愛運":
+
+            user_states[user_id] = "love"
+
+            reply_text = (
+                "💕恋愛運鑑定\n\n"
+                "お名前を入力してください✨"
+            )
+
+        # 仕事運
+        elif user_text == "💼仕事運":
+
+            user_states[user_id] = "work"
+
+            reply_text = (
+                "💼仕事運鑑定\n\n"
+                "お名前を入力してください✨"
+            )
+
+        # 金運
+        elif user_text == "💰金運":
+
+            user_states[user_id] = "money"
+
+            reply_text = (
+                "💰金運鑑定\n\n"
+                "お名前を入力してください✨"
+            )
+
+        # 総合運
+        elif user_text == "⭐総合運":
+
+            user_states[user_id] = "total"
+
+            reply_text = (
+                "⭐総合運鑑定\n\n"
+                "お名前を入力してください✨"
+            )
+
+        # 人生相談
+        elif user_text == "🌙人生相談":
+
+            user_states[user_id] = "life"
+
+            reply_text = (
+                "🌙人生相談\n\n"
+                "お名前を入力してください✨"
+            )
+
+        # 相性占い
+        elif user_text == "🔮相性占い":
+
+            user_states[user_id] = "compatibility"
+
+            reply_text = (
+                "🔮相性占い\n\n"
+                "あなたのお名前を入力してください✨"
+            )
+
+        # 今日の運勢
+        elif user_text == "☀今日の運勢":
+
+            response = model.generate_content(DAILY_PROMPT)
+
+            reply_text = response.text
+
+        # タロット
+        elif user_text == "🃏タロット":
+
+            reply_text = draw_tarot()
+        # 名前入力
+        elif user_states.get(user_id) in ["love", "work", "life", "money", "total"]:
+
+            users = load_users()
+
+            users[user_id] = {
+                "type": user_states[user_id],
+                "name": user_text
+            }
+
+            save_users(users)
+
+            user_states[user_id] = "birthday"
+
+            reply_text = (
+                "生年月日を入力してください✨\n\n"
+                "例：1984/04/19"
+            )
+
+        # 生年月日入力
+        elif user_states.get(user_id) == "birthday":
+
+            users = load_users()
+
+            users[user_id]["birthday"] = user_text
+
+            save_users(users)
+
+            user_states[user_id] = "consultation"
+
+            reply_text = (
+                "相談内容を入力してください✨\n\n"
+                "例：好きな人との今後を占ってください"
+            )
+
+        # 相談内容入力
+        elif user_states.get(user_id) == "consultation":
+
+            users = load_users()
+
+            category = users[user_id]["type"]
+
+            if category == "love":
+                base_prompt = LOVE_PROMPT
+
+            elif category == "work":
+                base_prompt = WORK_PROMPT
+
+            elif category == "money":
+                base_prompt = MONEY_PROMPT
+
+            elif category == "total":
+                base_prompt = TOTAL_PROMPT
+
+            else:
+                base_prompt = LIFE_PROMPT
+
+            memory = load_memory()
+
+            old_text = memory.get(user_id, "")
+
+            prompt = f"""
+
+前回の相談：
+{old_text}
+
+{base_prompt}
+
+名前：
+{users[user_id]['name']}
+
+生年月日：
+{users[user_id]['birthday']}
+
+今回の相談：
+{user_text}
+
+"""
+
+            try:
+
+                response = model.generate_content(prompt)
+
+                reply_text = response.text
+
+            except Exception as e:
+
+                print(e)
+
+                reply_text = "現在鑑定できません。"
+
+            memory[user_id] = user_text
+
+            save_memory(memory)
+
+            user_states.pop(user_id, None)
+        # 相性占い：あなたの名前
+        elif user_states.get(user_id) == "compatibility":
+
+            users = load_users()
+
+            users[user_id] = {
+                "my_name": user_text
+            }
+
+            save_users(users)
+
+            user_states[user_id] = "compatibility_birthday"
+
+            reply_text = (
+                "あなたの生年月日を入力してください✨\n\n"
+                "例：1984/04/19"
+            )
+
+        # あなたの生年月日
+        elif user_states.get(user_id) == "compatibility_birthday":
+
+            users = load_users()
+
+            users[user_id]["my_birthday"] = user_text
+
+            save_users(users)
+
+            user_states[user_id] = "partner_name"
+
+            reply_text = (
+                "お相手のお名前を入力してください✨"
+            )
+
+        # 相手の名前
+        elif user_states.get(user_id) == "partner_name":
+
+            users = load_users()
+
+            users[user_id]["partner_name"] = user_text
+
+            save_users(users)
+
+            user_states[user_id] = "partner_birthday"
+
+            reply_text = (
+                "お相手の生年月日を入力してください✨\n\n"
+                "分からない場合は「不明」でも大丈夫です。"
+            )
+
+        # 相手の生年月日
+        elif user_states.get(user_id) == "partner_birthday":
+
+            users = load_users()
+
+            users[user_id]["partner_birthday"] = user_text
+
+            save_users(users)
+
+            prompt = f"""
+
+{COMPATIBILITY_PROMPT}
+
+【あなた】
+名前：
+{users[user_id]['my_name']}
+
+生年月日：
+{users[user_id]['my_birthday']}
+
+【お相手】
+名前：
+{users[user_id]['partner_name']}
+
+生年月日：
+{users[user_id]['partner_birthday']}
+
+"""
+
+            try:
+
+                response = model.generate_content(prompt)
+
+                reply_text = response.text
+
+            except Exception as e:
+
+                print(e)
+
+                reply_text = "現在、相性占いを行えません。"
+
+            user_states.pop(user_id, None)
+        # その他
+        else:
+
+            reply_text = (
+                "🌙運命鑑定へようこそ🌙\n\n"
+                "💕恋愛運\n"
+                "💼仕事運\n"
+                "💰金運\n"
+                "⭐総合運\n"
+                "🌙人生相談\n"
+                "🔮相性占い\n"
+                "☀今日の運勢\n"
+                "🃏タロット\n\n"
+                "ご希望のメニューを送信してください✨"
+            )
+
+        headers = {
+            "Authorization": f"Bearer {ACCESS_TOKEN}",
+            "Content-Type": "application/json"
+        }
+
+        data = {
+            "replyToken": reply_token,
+            "messages": [
+                {
+                    "type": "text",
+                    "text": reply_text[:1000]
+                }
+            ]
+        }
+
+        requests.post(
+            "https://api.line.me/v2/bot/message/reply",
+            headers=headers,
+            json=data
+        )
+
+    return "OK"
+
+
+if __name__ == "__main__":
+    app.run(debug=True)
