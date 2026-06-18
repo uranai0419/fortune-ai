@@ -104,14 +104,14 @@ def callback():
             )
 
         # 今日の運勢
-        elif user_text == "☀今日の運勢", "運勢":
+        elif user_text in ["☀今日の運勢", "運勢"]:
 
             response = model.generate_content(DAILY_PROMPT)
 
             reply_text = response.text
 
         # タロット
-        elif user_text == "🃏タロット", "タロット":
+        elif user_text in ["🃏タロット", "タロット"]:
 
             reply_text = draw_tarot()
         # 名前入力
