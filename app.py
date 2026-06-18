@@ -44,7 +44,7 @@ def callback():
 
         reply_text = ""
         # 恋愛運
-        if user_text == "💕恋愛運":
+        if user_text == "💕恋愛運", "恋愛", "恋愛運":
 
             user_states[user_id] = "love"
 
@@ -54,7 +54,7 @@ def callback():
             )
 
         # 仕事運
-        elif user_text == "💼仕事運":
+        elif user_text == "💼仕事運", "仕事", "仕事運":
 
             user_states[user_id] = "work"
 
@@ -66,7 +66,7 @@ def callback():
         # 金運
         elif user_text == "💰金運":
 
-            user_states[user_id] = "money"
+            user_states[user_id] = "money", "金運"
 
             reply_text = (
                 "💰金運鑑定\n\n"
@@ -74,7 +74,7 @@ def callback():
             )
 
         # 総合運
-        elif user_text == "⭐総合運":
+        elif user_text == "⭐総合運", "総合運":
 
             user_states[user_id] = "total"
 
@@ -84,7 +84,7 @@ def callback():
             )
 
         # 人生相談
-        elif user_text == "🌙人生相談":
+        elif user_text == "🌙人生相談", "人生相談":
 
             user_states[user_id] = "life"
 
@@ -94,7 +94,7 @@ def callback():
             )
 
         # 相性占い
-        elif user_text == "🔮相性占い":
+        elif user_text == "🔮相性占い", "相性":
 
             user_states[user_id] = "compatibility"
 
@@ -104,14 +104,14 @@ def callback():
             )
 
         # 今日の運勢
-        elif user_text == "☀今日の運勢":
+        elif user_text == "☀今日の運勢", "運勢":
 
             response = model.generate_content(DAILY_PROMPT)
 
             reply_text = response.text
 
         # タロット
-        elif user_text == "🃏タロット":
+        elif user_text == "🃏タロット", "タロット":
 
             reply_text = draw_tarot()
         # 名前入力
