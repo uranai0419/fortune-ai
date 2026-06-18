@@ -44,7 +44,7 @@ def callback():
 
         reply_text = ""
         # 恋愛運
-        if user_text == "💕恋愛運", "恋愛", "恋愛運":
+        if user_text in ["💕恋愛運", "恋愛", "恋愛運"]:
 
             user_states[user_id] = "love"
 
@@ -54,7 +54,7 @@ def callback():
             )
 
         # 仕事運
-        elif user_text == "💼仕事運", "仕事", "仕事運":
+        elif user_text in ["💼仕事運", "仕事", "仕事運"]:
 
             user_states[user_id] = "work"
 
@@ -64,7 +64,7 @@ def callback():
             )
 
         # 金運
-        elif user_text == "💰金運":
+        elif user_text in ["💰金運", "金運"]:
 
             user_states[user_id] = "money", "金運"
 
@@ -74,7 +74,7 @@ def callback():
             )
 
         # 総合運
-        elif user_text == "⭐総合運", "総合運":
+        elif user_text in ["⭐総合運", "総合運"]:
 
             user_states[user_id] = "total"
 
@@ -84,7 +84,7 @@ def callback():
             )
 
         # 人生相談
-        elif user_text == "🌙人生相談", "人生相談":
+        elif user_text in ["🌙人生相談", "人生相談"]:
 
             user_states[user_id] = "life"
 
@@ -94,7 +94,7 @@ def callback():
             )
 
         # 相性占い
-        elif user_text == "🔮相性占い", "相性":
+        elif user_text in ["🔮相性占い", "相性", "相性占い"]:
 
             user_states[user_id] = "compatibility"
 
