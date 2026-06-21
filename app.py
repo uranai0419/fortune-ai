@@ -43,7 +43,38 @@ def callback():
         user_id = event["source"]["userId"]
 
         reply_text = ""
-        # 恋愛運
+
+    # 続き相談
+    if user_text in ["続き", "前回の続き", "続きを占って"]:
+
+        memory = load_memory()
+        users = load_users()
+
+        old_text = memory.get(user_id, "")
+
+        if old_text == "":
+            reply_text = "過去の相談履歴がありません✨"
+
+        else:
+
+            prompt = f"""
+
+過去の相談履歴
+
+{old_text}
+
+前回からの流れを考慮して、
+現在の状況を優しく具体的に鑑定してください。
+"""
+
+            try:
+                response = model.generate_content(prompt)
+                reply_text = response.text
+
+            except Exception:
+                reply_text = "現在鑑定できません。"
+
+    # 恋愛運
         if user_text in ["💕恋愛運", "恋愛", "恋愛運"]:
 
             user_states[user_id] = "love"
@@ -178,18 +209,28 @@ def callback():
             prompt = f"""
 
 前回の相談：
+あなたは優秀な占い師です。
+
+同じ相談者との会話が続いています。
+
+【過去の相談履歴】
 {old_text}
+
+【名前】
+{users[user_id]['name']}
+
+【生年月日】
+{users[user_id]['birthday']}
 
 {base_prompt}
 
-名前：
-{users[user_id]['name']}
+今回の相談内容
 
-生年月日：
-{users[user_id]['birthday']}
-
-今回の相談：
 {user_text}
+
+過去の相談内容も考慮して、
+前回とのつながりを意識しながら、
+優しく具体的に鑑定してください。
 
 """
 
@@ -205,7 +246,7 @@ def callback():
 
                 reply_text = "現在鑑定できません。"
 
-            memory[user_id] = user_text
+            memory[user_id] = old_text + "\n" + user_text
 
             save_memory(memory)
 
