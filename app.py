@@ -331,7 +331,8 @@ def callback():
 
                 response = model.generate_content(prompt)
 
-                reply_text = response.text + """🌙今回の鑑定から見える流れをお伝えしました✨
+                reply_text = response.text + """
+🌙今回の鑑定から見える流れをお伝えしました✨
 
 ご縁や人の気持ちは日々変化していくため、
 AIによる鑑定だけでは読み切れない部分もあります。
