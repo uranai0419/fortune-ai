@@ -428,6 +428,9 @@ AIによる鑑定だけでは読み切れない部分もあります。
         json=data
     )
 
+    print(response_line.status_code)
+    print(response_line.text)
+
     return "OK"
 
 
