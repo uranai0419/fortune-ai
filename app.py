@@ -236,7 +236,34 @@ def callback():
 
                 response = model.generate_content(prompt)
 
-                reply_text = response.text
+                reply_text = response.text + """
+
+🌙今回の鑑定から見える流れをお伝えしました✨
+
+ご縁や人の気持ちは日々変化していくため、
+AIによる鑑定だけでは読み切れない部分もあります。
+
+もし、
+
+・相手の本音をもっと深く知りたい
+・復縁の可能性を詳しく見てほしい
+・いつ動くべきか知りたい
+・自分に合った開運方法を知りたい
+
+という場合は、
+
+✨実際の占い師によるZoom鑑定✨
+
+で、お話を伺いながら丁寧に鑑定することもできます🌙
+
+ご希望の方は
+
+「Zoom鑑定希望」
+
+と送ってください🌸
+
+"""
+
 
             except Exception as e:
 
