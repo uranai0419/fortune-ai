@@ -44,38 +44,36 @@ def callback():
 
         reply_text = ""
 
-    # 続き相談
-    if user_text in ["続き", "前回の続き", "続きを占って"]:
+        # 続き相談
+        if user_text in ["続き", "前回の続き", "続きを占って"]:
 
-        memory = load_memory()
-        users = load_users()
+            memory = load_memory()
+            users = load_users()
 
-        old_text = memory.get(user_id, "")
+            old_text = memory.get(user_id, "")
 
-        if old_text == "":
-            reply_text = "過去の相談履歴がありません✨"
+            if old_text == "":
+                reply_text = "過去の相談履歴がありません✨"
 
-        else:
+            else:
+                prompt = f"""
+   過去の相談履歴
 
-            prompt = f"""
+   {old_text}
 
-過去の相談履歴
+   前回からの流れを考慮して、
+   現在の状況を優しく具体的に鑑定してください。
+   """
 
-{old_text}
+                try:
+                    response = model.generate_content(prompt)
+                    reply_text = response.text
 
-前回からの流れを考慮して、
-現在の状況を優しく具体的に鑑定してください。
-"""
+                except Exception:
+                    reply_text = "現在鑑定できません。"
 
-            try:
-                response = model.generate_content(prompt)
-                reply_text = response.text
-
-            except Exception:
-                reply_text = "現在鑑定できません。"
-
-    # 恋愛運
-        if user_text in ["💕恋愛運", "恋愛", "恋愛運"]:
+        # 恋愛運
+        elif user_text in ["💕恋愛運", "恋愛", "恋愛運"]:
 
             user_states[user_id] = "love"
 
