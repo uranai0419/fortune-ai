@@ -95,7 +95,7 @@ def callback():
         # 金運
         elif user_text in ["💰金運", "金運"]:
 
-            user_states[user_id] = "money", "金運"
+            user_states[user_id] = "money"
 
             reply_text = (
                 "💰金運鑑定\n\n"
@@ -417,19 +417,19 @@ AIによる鑑定だけでは読み切れない部分もあります。
             "messages": [
                 {
                     "type": "text",
-                    "text": reply_text[:1000]
+                    "text": reply_text[:5000]
                 }
             ]
         }
 
-        requests.post(
-        "https://api.line.me/v2/bot/message/reply",
-        headers=headers,
-        json=data
-    )
+        response_line = requests.post(
+            "https://api.line.me/v2/bot/message/reply",
+            headers=headers,
+            json=data
+        )
 
-    print(response_line.status_code)
-    print(response_line.text)
+        print(response_line.status_code)
+        print(response_line.text)
 
     return "OK"
 
