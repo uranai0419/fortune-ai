@@ -72,6 +72,39 @@ def callback():
                 except Exception:
                     reply_text = "現在鑑定できません。"
 
+        # Zoom鑑定
+        elif user_text in [
+            "🌙Zoom鑑定",
+            "Zoom鑑定",
+            "Zoom",
+            "zoom",
+            "Zoom鑑定希望",
+            "鑑定希望",
+            "予約"
+        ]:
+
+            reply_text = """
+🌙Zoom鑑定をご希望いただきありがとうございます✨
+
+AI鑑定では読み切れない
+
+・相手の本音
+・復縁の可能性
+・結婚のタイミング
+・本当に動くべき時期
+
+などを、
+
+実際の占い師が
+あなたのお話を伺いながら
+丁寧に鑑定いたします✨
+
+▼ご予約はこちら
+
+https://あなたの予約ページ
+
+ご予約をお待ちしております🌸
+"""
         # 恋愛運
         elif user_text in ["💕恋愛運", "恋愛", "恋愛運"]:
 
@@ -112,16 +145,6 @@ def callback():
                 "お名前を入力してください✨"
             )
 
-        # 人生相談
-        elif user_text in ["🌙人生相談", "人生相談"]:
-
-            user_states[user_id] = "life"
-
-            reply_text = (
-                "🌙人生相談\n\n"
-                "お名前を入力してください✨"
-            )
-
         # 相性占い
         elif user_text in ["🔮相性占い", "相性", "相性占い"]:
 
@@ -139,28 +162,30 @@ def callback():
 
             reply_text = response.text
 
-        # タロット
-        elif user_text in ["🃏タロット", "タロット"]:
+        elif user_text in ["🌙Zoom鑑定", "Zoom鑑定"]:
 
-            reply_text = draw_tarot()
-        # 名前入力
-        elif user_states.get(user_id) in ["love", "work", "life", "money", "total"]:
+            reply_text = """
+🌙Zoom鑑定のご案内🌙
 
-            users = load_users()
+AI鑑定では読み切れない
 
-            users[user_id] = {
-                "type": user_states[user_id],
-                "name": user_text
-            }
+・相手の本音
+・復縁の可能性
+・今後の流れ
+・開運時期
 
-            save_users(users)
+などを、
 
-            user_states[user_id] = "birthday"
+実際の占い師が
+あなたのお話を伺いながら
+丁寧に鑑定いたします✨
 
-            reply_text = (
-                "生年月日を入力してください✨\n\n"
-                "例：1984/04/19"
-            )
+▼お申込みはこちら
+
+https://あなたの申込URL
+
+ご相談お待ちしております🌸
+"""
 
         # 生年月日入力
         elif user_states.get(user_id) == "birthday":
@@ -399,11 +424,9 @@ AIによる鑑定だけでは読み切れない部分もあります。
                 "💕恋愛運\n"
                 "💼仕事運\n"
                 "💰金運\n"
-                "⭐総合運\n"
-                "🌙人生相談\n"
+                "☀本日の運勢\n"
                 "🔮相性占い\n"
-                "☀今日の運勢\n"
-                "🃏タロット\n\n"
+                "🌙Zoom鑑定\n\n"
                 "ご希望のメニューを送信してください✨"
             )
 
