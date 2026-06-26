@@ -140,7 +140,7 @@ https://forms.gle/iovCGpzebfGPzH9H9
         # 今日の運勢
         elif user_text in ["☀本日の運勢", "本日の運勢", "運勢"]:
 
-        try:
+            try:
 
             response = model.generate_content(DAILY_PROMPT)
 
