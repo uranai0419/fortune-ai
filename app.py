@@ -142,9 +142,8 @@ https://forms.gle/iovCGpzebfGPzH9H9
 
             try:
 
-            response = model.generate_content(DAILY_PROMPT)
-
-            reply_text = response.text
+                response = model.generate_content(DAILY_PROMPT)
+                reply_text = response.text
 
             except Exception as e:
                 print(e)
