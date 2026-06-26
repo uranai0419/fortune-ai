@@ -135,16 +135,6 @@ https://あなたの予約ページ
                 "お名前を入力してください✨"
             )
 
-        # 総合運
-        elif user_text in ["⭐総合運", "総合運"]:
-
-            user_states[user_id] = "total"
-
-            reply_text = (
-                "⭐総合運鑑定\n\n"
-                "お名前を入力してください✨"
-            )
-
         # 相性占い
         elif user_text in ["🔮相性占い", "相性", "相性占い"]:
 
@@ -156,7 +146,7 @@ https://あなたの予約ページ
             )
 
         # 今日の運勢
-        elif user_text in ["☀今日の運勢", "運勢"]:
+        elif user_text in ["☀本日の運勢", "本日の運勢", "運勢"]:
 
             response = model.generate_content(DAILY_PROMPT)
 
