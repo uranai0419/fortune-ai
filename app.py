@@ -73,15 +73,7 @@ def callback():
                     reply_text = "現在鑑定できません。"
 
         # Zoom鑑定
-        elif user_text in [
-            "🌙Zoom鑑定",
-            "Zoom鑑定",
-            "Zoom",
-            "zoom",
-            "Zoom鑑定希望",
-            "鑑定希望",
-            "予約"
-        ]:
+        elif "Zoom" in user_text or "zoom" in user_text:
 
             reply_text = """
 🌙Zoom鑑定をご希望いただきありがとうございます✨
@@ -101,7 +93,7 @@ AI鑑定では読み切れない
 
 ▼ご予約はこちら
 
-https://あなたの予約ページ
+https://forms.gle/iovCGpzebfGPzH9H9
 
 ご予約をお待ちしております🌸
 """
@@ -152,30 +144,9 @@ https://あなたの予約ページ
 
             reply_text = response.text
 
-        elif user_text in ["🌙Zoom鑑定", "Zoom鑑定"]:
-
-            reply_text = """
-🌙Zoom鑑定のご案内🌙
-
-AI鑑定では読み切れない
-
-・相手の本音
-・復縁の可能性
-・今後の流れ
-・開運時期
-
-などを、
-
-実際の占い師が
-あなたのお話を伺いながら
-丁寧に鑑定いたします✨
-
-▼お申込みはこちら
-
-https://あなたの申込URL
-
-ご相談お待ちしております🌸
-"""
+            except Exception as e:
+                print(e)
+                reply_text = "現在、本日の運勢を鑑定できません。"
 
         # 生年月日入力
         elif user_states.get(user_id) == "birthday":
