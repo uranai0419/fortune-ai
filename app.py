@@ -428,7 +428,10 @@ AIによる鑑定だけでは読み切れない部分もあります。
 @app.route("/notify", methods=["POST"])
 def notify():
 
+    print("===== /notify called =====")
+
     data = request.json
+    print(data)
 
     message = data["message"]
 
@@ -453,6 +456,7 @@ def notify():
         json=body
     )
 
+    print("===== LINE PUSH RESULT =====")
     print(r.status_code)
     print(r.text)
 
