@@ -79,7 +79,7 @@ def callback():
                     reply_text = "現在鑑定できません。"
 
         # Zoom鑑定
-        elif "Zoom" in user_text or "zoom" in user_text:
+        elif "zoom" in user_text.lower():
 
             reply_text = """
 🌙Zoom鑑定をご希望いただきありがとうございます✨
@@ -155,6 +155,24 @@ https://forms.gle/iovCGpzebfGPzH9H9
                 print(e)
                 reply_text = "現在、本日の運勢を鑑定できません。"
 
+        # 名前入力（恋愛・仕事・金運共通）
+        elif user_states.get(user_id) in ["love", "work", "money"]:
+
+            users = load_users()
+
+            users[user_id] = {
+                "name": user_text,
+                "type": user_states[user_id]
+            }
+
+            save_users(users)
+
+            user_states[user_id] = "birthday"
+
+            reply_text = (
+                "生年月日を入力してください✨\n\n"
+                "例：1990/01/01"
+            )
         # 生年月日入力
         elif user_states.get(user_id) == "birthday":
 
@@ -186,9 +204,6 @@ https://forms.gle/iovCGpzebfGPzH9H9
 
             elif category == "money":
                 base_prompt = MONEY_PROMPT
-
-            elif category == "total":
-                base_prompt = TOTAL_PROMPT
 
             else:
                 base_prompt = LIFE_PROMPT
@@ -264,7 +279,14 @@ AIによる鑑定だけでは読み切れない部分もあります。
 
                 reply_text = "現在鑑定できません。"
 
-            memory[user_id] = old_text + "\n" + user_text
+            memory[user_id] = (
+                old_text
+                + "\n【相談】"
+                + user_text
+                + "\n【鑑定】"
+                + reply_text
+            )
+
 
             save_memory(memory)
 
@@ -274,9 +296,8 @@ AIによる鑑定だけでは読み切れない部分もあります。
 
             users = load_users()
 
-            users[user_id] = {
-                "my_name": user_text
-            }
+            users.setdefault(user_id, {})
+            users[user_id]["my_name"] = user_text
 
             save_users(users)
 
