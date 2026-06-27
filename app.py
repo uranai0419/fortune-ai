@@ -419,5 +419,38 @@ AIによる鑑定だけでは読み切れない部分もあります。
     return "OK"
 
 
+@app.route("/notify", methods=["POST"])
+def notify():
+
+    data = request.json
+
+    message = data["message"]
+
+    headers = {
+        "Authorization": f"Bearer {ACCESS_TOKEN}",
+        "Content-Type": "application/json"
+    }
+
+    body = {
+        "to": ADMIN_USER_ID,
+        "messages": [
+            {
+                "type": "text",
+                "text": message[:5000]
+            }
+        ]
+    }
+
+    r = requests.post(
+        "https://api.line.me/v2/bot/message/push",
+        headers=headers,
+        json=body
+    )
+
+    print(r.status_code)
+    print(r.text)
+
+    return "OK"
+
 if __name__ == "__main__":
     app.run(debug=True)
