@@ -7,6 +7,8 @@ from prompts import *
 from tarot import draw_tarot
 from storage import *
 
+ADMIN_USER_ID = "U78cd818495a8e092c9f2dc6b2761b5e6"
+
 app = Flask(__name__)
 
 genai.configure(api_key=GEMINI_API_KEY)
