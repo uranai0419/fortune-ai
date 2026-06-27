@@ -42,6 +42,10 @@ def callback():
         reply_token = event["replyToken"]
         user_id = event["source"]["userId"]
 
+        print("===== USER ID =====")
+        print(user_id)
+        print("===================")
+
         reply_text = ""
 
         # 続き相談
