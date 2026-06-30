@@ -395,6 +395,7 @@ AIだけでは読み切れない部分もあります。
                 f"💰金運ちゃん：{today_logs.get('money',0)}回\n"
                 f"🔮運命ちゃん：{today_logs.get('destiny',0)}回\n"
                 f"☀運勢ちゃん：{today_logs.get('daily',0)}回\n\n"
+                f"🌙Zoom鑑定：{today_logs.get('zoom',0)}回\n"
 
                 "────────────\n\n"
 
@@ -404,6 +405,7 @@ AIだけでは読み切れない部分もあります。
                 f"💰金運ちゃん：{logs.get('money',0)}回\n"
                 f"🔮運命ちゃん：{logs.get('destiny',0)}回\n"
                 f"☀運勢ちゃん：{logs.get('daily',0)}回"
+                f"🌙Zoom鑑定：{logs.get('zoom',0)}回"
             )
 
 
