@@ -388,6 +388,20 @@ AIだけでは読み切れない部分もあります。
 
             today_users = len(logs.get("users", {}).get(today, []))
 
+            today_zoom_menu = today_logs.get("zoom_menu", 0)
+            today_zoom_request = today_logs.get("zoom_request", 0)
+            today_zoom_booked = today_logs.get("zoom_booked", 0)
+
+            if today_zoom_menu > 0:
+                request_rate = round(today_zoom_request / today_zoom_menu * 100, 1)
+            else:
+                request_rate = 0
+
+            if today_zoom_request > 0:
+                booked_rate = round(today_zoom_booked / today_zoom_request * 100, 1)
+            else:
+                booked_rate = 0
+
             reply_text = (
                 "📊 AI占い館レポート\n\n"
 
@@ -407,6 +421,11 @@ AIだけでは読み切れない部分もあります。
                 f"メニュー表示：{today_logs.get('zoom_menu',0)}回\n"
                 f"Zoom希望：{today_logs.get('zoom_request',0)}回\n"
                 f"予約完了：{today_logs.get('zoom_booked',0)}件\n\n"
+
+                "📈 Zoom成約率\n"
+
+                f"希望率：{request_rate}%\n"
+                f"予約率：{booked_rate}%\n\n"
 
                 "────────────\n\n"
 
