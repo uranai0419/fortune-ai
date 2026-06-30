@@ -57,3 +57,11 @@ def save_logs(data):
 
     with open("logs.json", "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
+
+def add_log(category):
+
+    logs = load_logs()
+
+    logs[category] = logs.get(category, 0) + 1
+
+    save_logs(logs)

@@ -106,13 +106,10 @@ https://forms.gle/iovCGpzebfGPzH9H9
         # 恋愛運
         elif user_text in ["💕恋愛運", "恋愛", "恋愛運"]:
 
+            add_log("love")
+
             user_states[user_id] = "love"
-
-            # 利用ログ
-            logs = load_logs()
-            logs["love"] = logs.get("love", 0) + 1
-            save_logs(logs)
-
+            
             reply_text = (
                 "💕恋愛運鑑定\n\n"
                 "お名前を入力してください✨"
@@ -123,9 +120,7 @@ https://forms.gle/iovCGpzebfGPzH9H9
 
             user_states[user_id] = "work"
 
-            logs = load_logs()
-            logs["work"] = logs.get("work", 0) + 1
-            save_logs(logs)
+            add_log("work")
 
             reply_text = (
                 "💼仕事運鑑定\n\n"
@@ -137,9 +132,7 @@ https://forms.gle/iovCGpzebfGPzH9H9
 
             user_states[user_id] = "money"
 
-            logs = load_logs()
-            logs["money"] = logs.get("money", 0) + 1
-            save_logs(logs)
+            add_log("money")
 
             reply_text = (
                 "💰金運鑑定\n\n"
@@ -151,9 +144,7 @@ https://forms.gle/iovCGpzebfGPzH9H9
 
             user_states[user_id] = "destiny"
 
-            logs = load_logs()
-            logs["destiny"] = logs.get("destiny", 0) + 1
-            save_logs(logs)
+            add_log("destiny")
 
             reply_text = (
                 "🔮AI運命ちゃん\n\n"
@@ -163,9 +154,7 @@ https://forms.gle/iovCGpzebfGPzH9H9
         # 今日の運勢
         elif user_text in ["☀今日の運勢", "今日の運勢", "運勢"]:
 
-            logs = load_logs()
-            logs["daily"] = logs.get("daily", 0) + 1
-            save_logs(logs)
+            add_log("daily")
 
             try:
 
