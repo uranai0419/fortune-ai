@@ -76,3 +76,17 @@ def add_log(category):
     )
 
     save_logs(logs)
+
+def add_today_user(user_id):
+
+    logs = load_logs()
+
+    today = datetime.now().strftime("%Y-%m-%d")
+
+    logs.setdefault("users", {})
+    logs["users"].setdefault(today, [])
+
+    if user_id not in logs["users"][today]:
+        logs["users"][today].append(user_id)
+
+    save_logs(logs)

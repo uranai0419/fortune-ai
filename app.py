@@ -81,7 +81,7 @@ def callback():
         # Zoom鑑定
         elif "zoom" in user_text.lower():
             
-            add_log("zoom")
+            add_log("zoom_menu")
 
             reply_text = """
 🌙Zoom鑑定をご希望いただきありがとうございます✨
@@ -386,8 +386,12 @@ AIだけでは読み切れない部分もあります。
 
             today_logs = logs.get("today", {}).get(today, {})
 
+            today_users = len(logs.get("users", {}).get(today, []))
+
             reply_text = (
                 "📊 AI占い館レポート\n\n"
+
+                f"👥 今日の利用人数：{today_users}人\n\n"
 
                 "【今日の利用回数】\n"
                 f"💕恋愛ちゃん：{today_logs.get('love',0)}回\n"
@@ -395,7 +399,16 @@ AIだけでは読み切れない部分もあります。
                 f"💰金運ちゃん：{today_logs.get('money',0)}回\n"
                 f"🔮運命ちゃん：{today_logs.get('destiny',0)}回\n"
                 f"☀運勢ちゃん：{today_logs.get('daily',0)}回\n\n"
-                f"🌙Zoom鑑定：{today_logs.get('zoom',0)}回\n"
+
+                "━━━━━━━━━━━━━━\n\n"
+
+                "🌙Zoom分析（今日）\n"
+
+                f"メニュー表示：{today_logs.get('zoom_menu',0)}回\n"
+                f"Zoom希望：{today_logs.get('zoom_request',0)}回\n"
+                f"予約完了：{today_logs.get('zoom_booked',0)}件\n\n"
+
+                "────────────\n\n"
 
                 "────────────\n\n"
 
@@ -404,10 +417,41 @@ AIだけでは読み切れない部分もあります。
                 f"💼仕事ちゃん：{logs.get('work',0)}回\n"
                 f"💰金運ちゃん：{logs.get('money',0)}回\n"
                 f"🔮運命ちゃん：{logs.get('destiny',0)}回\n"
-                f"☀運勢ちゃん：{logs.get('daily',0)}回"
-                f"🌙Zoom鑑定：{logs.get('zoom',0)}回"
+                f"☀運勢ちゃん：{logs.get('daily',0)}回\n\n"
+
+                "━━━━━━━━━━━━━━\n\n"
+
+                "🌙Zoom分析（累計）\n"
+
+                f"メニュー表示：{logs.get('zoom_menu',0)}回\n"
+                f"Zoom希望：{logs.get('zoom_request',0)}回\n"
+                f"予約完了：{logs.get('zoom_booked',0)}件"
             )
 
+
+        # Zoom鑑定希望
+        elif user_text in ["Zoom鑑定希望", "zoom鑑定希望"]:
+
+            add_log("zoom_request")
+
+            reply_text = (
+                "ありがとうございます✨\n\n"
+                "Zoom鑑定のご希望を承りました。\n\n"
+                "担当者より日程調整のご連絡をいたしますので、"
+                "少々お待ちください🌸"
+            )
+
+        # Zoom予約完了（管理者専用）
+        elif (
+            user_text == "予約完了"
+            and user_id == ADMIN_USER_ID
+        ):
+
+            add_log("zoom_booked")
+
+            reply_text = (
+                "✅ Zoom予約件数を1件追加しました。"
+            )
 
         # その他
         else:
