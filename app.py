@@ -161,7 +161,7 @@ https://forms.gle/iovCGpzebfGPzH9H9
             )
         
         # 今日の運勢
-        elif user_text in ["☀本日の運勢", "本日の運勢", "運勢"]:
+        elif user_text in ["☀今日の運勢", "今日の運勢", "運勢"]:
 
             logs = load_logs()
             logs["daily"] = logs.get("daily", 0) + 1
