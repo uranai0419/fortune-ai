@@ -108,6 +108,11 @@ https://forms.gle/iovCGpzebfGPzH9H9
 
             user_states[user_id] = "love"
 
+            # 利用ログ
+            logs = load_logs()
+            logs["love"] = logs.get("love", 0) + 1
+            save_logs(logs)
+
             reply_text = (
                 "💕恋愛運鑑定\n\n"
                 "お名前を入力してください✨"
@@ -117,6 +122,10 @@ https://forms.gle/iovCGpzebfGPzH9H9
         elif user_text in ["💼仕事運", "仕事", "仕事運"]:
 
             user_states[user_id] = "work"
+
+            logs = load_logs()
+            logs["work"] = logs.get("work", 0) + 1
+            save_logs(logs)
 
             reply_text = (
                 "💼仕事運鑑定\n\n"
@@ -128,6 +137,10 @@ https://forms.gle/iovCGpzebfGPzH9H9
 
             user_states[user_id] = "money"
 
+            logs = load_logs()
+            logs["money"] = logs.get("money", 0) + 1
+            save_logs(logs)
+
             reply_text = (
                 "💰金運鑑定\n\n"
                 "お名前を入力してください✨"
@@ -138,13 +151,21 @@ https://forms.gle/iovCGpzebfGPzH9H9
 
             user_states[user_id] = "destiny"
 
+            logs = load_logs()
+            logs["destiny"] = logs.get("destiny", 0) + 1
+            save_logs(logs)
+
             reply_text = (
                 "🔮AI運命ちゃん\n\n"
                 "お名前を入力してください✨"
-            )# 相性占い
+            )
         
         # 今日の運勢
         elif user_text in ["☀本日の運勢", "本日の運勢", "運勢"]:
+
+            logs = load_logs()
+            logs["daily"] = logs.get("daily", 0) + 1
+            save_logs(logs)
 
             try:
 
@@ -173,6 +194,8 @@ https://forms.gle/iovCGpzebfGPzH9H9
                 "生年月日を入力してください✨\n\n"
                 "例：1990/01/01"
             )
+
+
         # 生年月日入力
         elif user_states.get(user_id) == "birthday":
 
@@ -188,6 +211,7 @@ https://forms.gle/iovCGpzebfGPzH9H9
                 "相談内容を入力してください✨\n\n"
                 "例：好きな人との今後を占ってください"
             )
+
 
         # 相談内容入力
         elif user_states.get(user_id) == "consultation":
@@ -206,91 +230,76 @@ https://forms.gle/iovCGpzebfGPzH9H9
                 base_prompt = MONEY_PROMPT
 
             else:
-                base_prompt = LIFE_PROMPT
+                reply_text = (
+                    "エラーが発生しました。\n"
+                    "もう一度メニューから選択してください。"
+                )
+                user_states.pop(user_id, None)
+                base_prompt = None
 
-            memory = load_memory()
+            if base_prompt:
 
-            old_text = memory.get(user_id, "")
+                memory = load_memory()
+                old_text = memory.get(user_id, "")
 
-            prompt = f"""
+                prompt = f"""
+            あなたは優秀な占い師です。
 
-前回の相談：
-あなたは優秀な占い師です。
+　　　　　　（過去の相談履歴）
+　　　　　　{old_text}
 
-同じ相談者との会話が続いています。
+　　　　　　【名前】
+　　　　　　{users[user_id]['name']}
 
-【過去の相談履歴】
-{old_text}
+　　　　　　【生年月日】
+　　　　　　{users[user_id]['birthday']}
 
-【名前】
-{users[user_id]['name']}
+　　　　　　{base_prompt}
 
-【生年月日】
-{users[user_id]['birthday']}
+　　　　　　【今回の相談内容】
+　　　　　　{user_text}
 
-{base_prompt}
+　　　　　　過去の相談内容も考慮し、
+　　　　　　前回とのつながりを意識しながら、
+　　　　　　相談者だけに寄り添う具体的な鑑定をしてください。
+　　　　　　"""
 
-今回の相談内容
+                try:
 
-{user_text}
+                    response = model.generate_content(prompt)
 
-過去の相談内容も考慮して、
-前回とのつながりを意識しながら、
-優しく具体的に鑑定してください。
-
-"""
-
-            try:
-
-                response = model.generate_content(prompt)
-
-                reply_text = response.text + """
+                    reply_text = response.text + """
 
 🌙今回の鑑定から見える流れをお伝えしました✨
 
-ご縁や人の気持ちは日々変化していくため、
-AIによる鑑定だけでは読み切れない部分もあります。
+ご縁や状況は日々変化していくため、
+AIだけでは読み切れない部分もあります。
 
-もし、
+もっと深く知りたい方は
 
-・相手の本音をもっと深く知りたい
-・復縁の可能性を詳しく見てほしい
-・いつ動くべきか知りたい
-・自分に合った開運方法を知りたい
+🌙Zoom鑑定希望
 
-という場合は、
-
-✨実際の占い師によるZoom鑑定✨
-
-で、お話を伺いながら丁寧に鑑定することもできます🌙
-
-ご希望の方は
-
-「Zoom鑑定希望」
-
-と送ってください🌸
-
+と送ってください✨
 """
 
+                except Exception as e:
 
-            except Exception as e:
+                    print(e)
 
-                print(e)
+                    reply_text = "現在鑑定できません。"
 
-                reply_text = "現在鑑定できません。"
+                memory[user_id] = (
+                    old_text
+                    + "\n【相談】"
+                    + user_text
+                    + "\n【鑑定】"
+                    + reply_text
+                )
 
-            memory[user_id] = (
-                old_text
-                + "\n【相談】"
-                + user_text
-                + "\n【鑑定】"
-                + reply_text
-            )
+                save_memory(memory)
 
+                user_states.pop(user_id, None)
 
-            save_memory(memory)
-
-            user_states.pop(user_id, None)
 
         # 運命鑑定：名前
         elif user_states.get(user_id) == "destiny":
