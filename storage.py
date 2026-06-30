@@ -1,6 +1,6 @@
 import json
 import os
-
+from datetime import datetime
 
 # ==========================
 # ユーザー情報
@@ -62,6 +62,17 @@ def add_log(category):
 
     logs = load_logs()
 
+    # 今日の日付
+    today = datetime.now().strftime("%Y-%m-%d")
+
+    # 累計
     logs[category] = logs.get(category, 0) + 1
+
+    # 今日の利用回数
+    logs.setdefault("today", {})
+    logs["today"].setdefault(today, {})
+    logs["today"][today][category] = (
+        logs["today"][today].get(category, 0) + 1
+    )
 
     save_logs(logs)
