@@ -80,6 +80,8 @@ def callback():
 
         # Zoom鑑定
         elif "zoom" in user_text.lower():
+            
+            add_log("zoom")
 
             reply_text = """
 🌙Zoom鑑定をご希望いただきありがとうございます✨
@@ -380,14 +382,28 @@ AIだけでは読み切れない部分もあります。
 
             logs = load_logs()
 
+            today = datetime.now().strftime("%Y-%m-%d")
+
+            today_logs = logs.get("today", {}).get(today, {})
+
             reply_text = (
-                "📊 AI占い館 利用状況\n\n"
-                f"💕恋愛ちゃん：{logs.get('love', 0)}回\n"
-                f"💼仕事ちゃん：{logs.get('work', 0)}回\n"
-                f"💰金運ちゃん：{logs.get('money', 0)}回\n"
-                f"🔮運命ちゃん：{logs.get('destiny', 0)}回\n"
-                f"☀運勢ちゃん：{logs.get('daily', 0)}回\n\n"
-                f"🌙Zoom鑑定：{logs.get('zoom', 0)}回"
+                "📊 AI占い館レポート\n\n"
+
+                "【今日の利用回数】\n"
+                f"💕恋愛ちゃん：{today_logs.get('love',0)}回\n"
+                f"💼仕事ちゃん：{today_logs.get('work',0)}回\n"
+                f"💰金運ちゃん：{today_logs.get('money',0)}回\n"
+                f"🔮運命ちゃん：{today_logs.get('destiny',0)}回\n"
+                f"☀運勢ちゃん：{today_logs.get('daily',0)}回\n\n"
+
+                "────────────\n\n"
+
+                "【累計利用回数】\n"
+                f"💕恋愛ちゃん：{logs.get('love',0)}回\n"
+                f"💼仕事ちゃん：{logs.get('work',0)}回\n"
+                f"💰金運ちゃん：{logs.get('money',0)}回\n"
+                f"🔮運命ちゃん：{logs.get('destiny',0)}回\n"
+                f"☀運勢ちゃん：{logs.get('daily',0)}回"
             )
 
 
