@@ -133,16 +133,16 @@ https://forms.gle/iovCGpzebfGPzH9H9
                 "お名前を入力してください✨"
             )
 
-        # 相性占い
-        elif user_text in ["🔮相性占い", "相性", "相性占い"]:
+        # 運命鑑定
+        elif user_text in ["🔮運命鑑定", "運命鑑定", "運命", "生年月日鑑定"]:
 
-            user_states[user_id] = "compatibility"
+            user_states[user_id] = "destiny"
 
             reply_text = (
-                "🔮相性占い\n\n"
-                "あなたのお名前を入力してください✨"
-            )
-
+                "🔮AI運命ちゃん\n\n"
+                "お名前を入力してください✨"
+            )# 相性占い
+        
         # 今日の運勢
         elif user_text in ["☀本日の運勢", "本日の運勢", "運勢"]:
 
@@ -291,130 +291,102 @@ AIによる鑑定だけでは読み切れない部分もあります。
             save_memory(memory)
 
             user_states.pop(user_id, None)
-        # 相性占い：あなたの名前
-        elif user_states.get(user_id) == "compatibility":
+
+        # 運命鑑定：名前
+        elif user_states.get(user_id) == "destiny":
 
             users = load_users()
 
             users.setdefault(user_id, {})
-            users[user_id]["my_name"] = user_text
+            users[user_id]["name"] = user_text
 
             save_users(users)
 
-            user_states[user_id] = "compatibility_birthday"
+            user_states[user_id] = "destiny_birthday"
 
             reply_text = (
-                "あなたの生年月日を入力してください✨\n\n"
-                "例：1984/04/19"
+                "生年月日を入力してください✨\n\n"
+                "例：1990/01/01"
             )
 
-        # あなたの生年月日
-        elif user_states.get(user_id) == "compatibility_birthday":
+        # 運命鑑定：生年月日
+        elif user_states.get(user_id) == "destiny_birthday":
 
             users = load_users()
 
-            users[user_id]["my_birthday"] = user_text
+            users[user_id]["birthday"] = user_text
 
             save_users(users)
 
-            user_states[user_id] = "partner_name"
+            user_states[user_id] = "destiny_consultation"
 
             reply_text = (
-                "お相手のお名前を入力してください✨"
+                "相談内容を入力してください✨\n\n"
+                "例：私の人生の流れを見てください"
             )
-
-        # 相手の名前
-        elif user_states.get(user_id) == "partner_name":
+        
+        # 運命鑑定：相談内容
+        elif user_states.get(user_id) == "destiny_consultation":
 
             users = load_users()
 
-            users[user_id]["partner_name"] = user_text
-
-            save_users(users)
-
-            user_states[user_id] = "partner_birthday"
-
-            reply_text = (
-                "お相手の生年月日を入力してください✨\n\n"
-                "分からない場合は「不明」でも大丈夫です。"
-            )
-
-        # 相手の生年月日
-        elif user_states.get(user_id) == "partner_birthday":
-
-            users = load_users()
-
-            users[user_id]["partner_birthday"] = user_text
-
-            save_users(users)
+            memory = load_memory()
+            old_text = memory.get(user_id, "")
 
             prompt = f"""
+        【過去の相談履歴】
+        {old_text}
 
-{COMPATIBILITY_PROMPT}
+        【名前】
+        {users[user_id]['name']}
 
-【あなた】
-名前：
-{users[user_id]['my_name']}
+        【生年月日】
+        {users[user_id]['birthday']}
 
-生年月日：
-{users[user_id]['my_birthday']}
+        {DESTINY_PROMPT}
 
-【お相手】
-名前：
-{users[user_id]['partner_name']}
+        【今回の相談】
+        {user_text}
 
-生年月日：
-{users[user_id]['partner_birthday']}
-
-"""
+        過去の相談内容も考慮しながら、
+        相談者の本質・運命・人生の流れを読み解き、
+        具体的で温かい鑑定をしてください。
+        """
 
             try:
 
                 response = model.generate_content(prompt)
 
-                reply_text = response.text + """
-🌙今回の鑑定から見える流れをお伝えしました✨
-
-ご縁や人の気持ちは日々変化していくため、
-AIによる鑑定だけでは読み切れない部分もあります。
-
-もし、
-
-・相手の本音をもっと深く知りたい
-・復縁の可能性を詳しく見てほしい
-・いつ動くべきか知りたい
-・自分に合った開運方法を知りたい
-
-という場合は、
-
-実際の占い師によるZoom鑑定で、
-お話を伺いながら丁寧に鑑定することもできます✨
-
-ご希望の方は
-
-「Zoom鑑定希望」
-
-と送ってください🌸
-"""
-
+                reply_text = response.text
 
             except Exception as e:
 
                 print(e)
 
-                reply_text = "現在、相性占いを行えません。"
+                reply_text = "現在、運命鑑定を行えません。"
+
+            memory[user_id] = (
+                old_text
+                + "\n【相談】"
+                + user_text
+                + "\n【鑑定】"
+                + reply_text
+            )
+
+            save_memory(memory)
 
             user_states.pop(user_id, None)
+
         # その他
         else:
 
             reply_text = (
-                "🌙運命鑑定へようこそ🌙\n\n"
-                "💕恋愛運\n"
-                "💼仕事運\n"
-                "💰金運\n"
-                "☀本日の運勢\n"
-                "🔮相性占い\n"
+                "🌙AI占い館へようこそ🌙\n\n"
+                "💕AI恋愛ちゃん\n"
+                "💼AI仕事ちゃん\n"
+                "💰AI金運ちゃん\n"
+                "🔮AI運命ちゃん\n"
+                "☀AI今日ちゃん\n"
                 "🌙Zoom鑑定\n\n"
                 "ご希望のメニューを送信してください✨"
             )
