@@ -386,6 +386,22 @@ AIだけでは読み切れない部分もあります。
 
             user_states.pop(user_id, None)
 
+        # 管理者レポート
+        elif user_text == "レポート" and user_id == ADMIN_USER_ID:
+
+            logs = load_logs()
+
+            reply_text = (
+                "📊 AI占い館 利用状況\n\n"
+                f"💕恋愛ちゃん：{logs.get('love', 0)}回\n"
+                f"💼仕事ちゃん：{logs.get('work', 0)}回\n"
+                f"💰金運ちゃん：{logs.get('money', 0)}回\n"
+                f"🔮運命ちゃん：{logs.get('destiny', 0)}回\n"
+                f"☀運勢ちゃん：{logs.get('daily', 0)}回\n\n"
+                f"🌙Zoom鑑定：{logs.get('zoom', 0)}回"
+            )
+
+
         # その他
         else:
 
