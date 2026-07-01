@@ -15,6 +15,12 @@ genai.configure(api_key=GEMINI_API_KEY)
 
 model = genai.GenerativeModel(MODEL_NAME)
 
+generation_config = {
+    "temperature": 0.8,
+    "top_p": 0.9,
+    "max_output_tokens": 900,
+}
+
 # ユーザー状態
 user_states = {}
 
@@ -274,7 +280,10 @@ https://forms.gle/iovCGpzebfGPzH9H9
 
                 try:
 
-                    response = model.generate_content(prompt)
+                    response = model.generate_content(
+                        prompt,
+                        generation_config=generation_config
+                    )
 
                     reply_text = response.text + """
 
