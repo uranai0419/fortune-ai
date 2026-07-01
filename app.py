@@ -18,7 +18,7 @@ model = genai.GenerativeModel(MODEL_NAME)
 generation_config = {
     "temperature": 0.8,
     "top_p": 0.9,
-    "max_output_tokens": 2000,
+    "max_output_tokens": 900,
 }
 
 # ユーザー状態
@@ -36,7 +36,11 @@ def ask_gemini(prompt):
             prompt,
             generation_config=generation_config
         )
-
+        
+        print("===== Gemini Response =====")
+        print(response)
+        print("===========================")
+        
         return response.text
 
     except Exception as e:
