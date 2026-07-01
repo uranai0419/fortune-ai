@@ -18,7 +18,7 @@ model = genai.GenerativeModel(MODEL_NAME)
 generation_config = {
     "temperature": 0.8,
     "top_p": 0.9,
-    "max_output_tokens": 900,
+    "max_output_tokens": 2000,
 }
 
 # ユーザー状態
