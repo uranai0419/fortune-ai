@@ -44,6 +44,18 @@ def callback():
         reply_token = event["replyToken"]
         user_id = event["source"]["userId"]
 
+        add_today_user(user_id)
+
+        users = load_users()
+
+        if user_id not in users:
+
+            users[user_id] = {
+                "first_visit": datetime.now().strftime("%Y-%m-%d")
+            }
+
+            save_users(users)
+
         print("===== USER ID =====")
         print(user_id)
         print("===================")
@@ -387,6 +399,21 @@ AIだけでは読み切れない部分もあります。
             today_logs = logs.get("today", {}).get(today, {})
 
             today_users = len(logs.get("users", {}).get(today, []))
+
+            repeat_users = 0
+            new_users = 0
+
+            for uid in logs.get("users", {}).get(today, []):
+
+                if is_repeat_user(uid):
+                    repeat_users += 1
+                else:
+                    new_users += 1
+
+            if today_users > 0:
+                repeat_rate = round(repeat_users / today_users * 100, 1)
+            else:
+                repeat_rate = 0
 
             today_zoom_menu = today_logs.get("zoom_menu", 0)
             today_zoom_request = today_logs.get("zoom_request", 0)
