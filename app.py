@@ -24,6 +24,26 @@ generation_config = {
 # ユーザー状態
 user_states = {}
 
+# ==========================
+# Gemini共通処理
+# ==========================
+
+def ask_gemini(prompt):
+
+    try:
+
+        response = model.generate_content(
+            prompt,
+            generation_config=generation_config
+        )
+
+        return response.text
+
+    except Exception as e:
+
+        print("Gemini Error:", e)
+
+        return None
 
 @app.route("/")
 def home():
@@ -179,13 +199,14 @@ https://forms.gle/iovCGpzebfGPzH9H9
 
             add_log("daily")
 
-            try:
+            response = ask_gemini(DAILY_PROMPT)
 
-                response = model.generate_content(DAILY_PROMPT)
-                reply_text = response.text
+            if response:
 
-            except Exception as e:
-                print(e)
+                reply_text = response
+
+            else:
+
                 reply_text = "現在、本日の運勢を鑑定できません。"
 
         # 名前入力（恋愛・仕事・金運共通）
@@ -278,30 +299,20 @@ https://forms.gle/iovCGpzebfGPzH9H9
 　　　　　　相談者だけに寄り添う具体的な鑑定をしてください。
 　　　　　　"""
 
-                try:
+                response = ask_gemini(prompt)
 
-                    response = model.generate_content(
-                        prompt,
-                        generation_config=generation_config
-                    )
+                if response:
 
-                    reply_text = response.text + """
+                    reply_text = response + """
 
-🌙今回の鑑定から見える流れをお伝えしました✨
+🌙もっと詳しく個別に見てほしい方は
 
-ご縁や状況は日々変化していくため、
-AIだけでは読み切れない部分もあります。
-
-もっと深く知りたい方は
-
-🌙Zoom鑑定希望
+「Zoom鑑定希望」
 
 と送ってください✨
 """
 
-                except Exception as e:
-
-                    print(e)
+                else:
 
                     reply_text = "現在鑑定できません。"
 
