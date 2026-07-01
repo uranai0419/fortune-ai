@@ -90,3 +90,9 @@ def add_today_user(user_id):
         logs["users"][today].append(user_id)
 
     save_logs(logs)
+
+def is_repeat_user(user_id):
+
+    users = load_users()
+
+    return user_id in users

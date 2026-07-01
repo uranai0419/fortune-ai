@@ -48,13 +48,16 @@ def callback():
 
         users = load_users()
 
-        if user_id not in users:
+        users.setdefault(user_id, {})
 
-            users[user_id] = {
-                "first_visit": datetime.now().strftime("%Y-%m-%d")
-            }
+        users[user_id].setdefault(
+            "first_visit",
+            datetime.now().strftime("%Y-%m-%d")
+        )
 
-            save_users(users)
+        users[user_id]["last_visit"] = datetime.now().strftime("%Y-%m-%d")
+
+        save_users(users)
 
         print("===== USER ID =====")
         print(user_id)
@@ -184,10 +187,10 @@ https://forms.gle/iovCGpzebfGPzH9H9
 
             users = load_users()
 
-            users[user_id] = {
-                "name": user_text,
-                "type": user_states[user_id]
-            }
+            users.setdefault(user_id, {})
+
+            users[user_id]["name"] = user_text
+            users[user_id]["type"] = user_states[user_id]
 
             save_users(users)
 
@@ -203,6 +206,8 @@ https://forms.gle/iovCGpzebfGPzH9H9
         elif user_states.get(user_id) == "birthday":
 
             users = load_users()
+
+            users.setdefault(user_id, {})
 
             users[user_id]["birthday"] = user_text
 
@@ -394,6 +399,10 @@ AIだけでは読み切れない部分もあります。
 
             logs = load_logs()
 
+            users = load_users()
+
+            total_users = len(users)
+
             today = datetime.now().strftime("%Y-%m-%d")
 
             today_logs = logs.get("today", {}).get(today, {})
@@ -433,6 +442,7 @@ AIだけでは読み切れない部分もあります。
                 "📊 AI占い館レポート\n\n"
 
                 f"👥 今日の利用人数：{today_users}人\n\n"
+                f"👥 累計ユーザー：{total_users}人\n\n"
 
                 "【今日の利用回数】\n"
                 f"💕恋愛ちゃん：{today_logs.get('love',0)}回\n"
