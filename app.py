@@ -87,7 +87,7 @@ def callback():
    """
 
                 try:
-                    response = model.generate_content(prompt)
+                    response = model.generate_content(    prompt,    generation_config=genai.types.GenerationConfig(        max_output_tokens=1200    ))
                     reply_text = response.text
 
                 except Exception:
