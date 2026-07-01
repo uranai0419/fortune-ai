@@ -97,7 +97,7 @@ def callback():
             memory = load_memory()
             users = load_users()
 
-            old_text = memory.get(user_id, "")
+            old_text = get_recent_memory(user_id)
 
             if old_text == "":
                 reply_text = "過去の相談履歴がありません✨"
@@ -112,11 +112,14 @@ def callback():
    現在の状況を優しく具体的に鑑定してください。
    """
 
-                try:
-                    response = model.generate_content(    prompt,    generation_config=genai.types.GenerationConfig(        max_output_tokens=1200    ))
-                    reply_text = response.text
+                response = ask_gemini(prompt)
 
-                except Exception:
+                if response:
+
+                    reply_text = response
+
+                else:
+
                     reply_text = "現在鑑定できません。"
 
         # Zoom鑑定
@@ -275,7 +278,7 @@ https://forms.gle/iovCGpzebfGPzH9H9
             if base_prompt:
 
                 memory = load_memory()
-                old_text = memory.get(user_id, "")
+                old_text = get_recent_memory(user_id)
 
                 prompt = f"""
             あなたは優秀な占い師です。
@@ -368,7 +371,7 @@ https://forms.gle/iovCGpzebfGPzH9H9
             users = load_users()
 
             memory = load_memory()
-            old_text = memory.get(user_id, "")
+            old_text = get_recent_memory(user_id)
 
             prompt = f"""
         【過去の相談履歴】
@@ -390,15 +393,13 @@ https://forms.gle/iovCGpzebfGPzH9H9
         具体的で温かい鑑定をしてください。
         """
 
-            try:
+            response = ask_gemini(prompt)
 
-                response = model.generate_content(prompt)
+            if response:
 
-                reply_text = response.text
+                reply_text = response
 
-            except Exception as e:
-
-                print(e)
+            else:
 
                 reply_text = "現在、運命鑑定を行えません。"
 

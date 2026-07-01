@@ -39,6 +39,29 @@ def save_memory(data):
     with open("memory.json", "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
 
+def get_recent_memory(user_id, limit=3):
+
+    memory = load_memory()
+
+    text = memory.get(user_id, "")
+
+    if text == "":
+        return ""
+
+    history = text.split("【相談】")
+
+    history = history[-limit:]
+
+    result = ""
+
+    for h in history:
+
+        if h.strip():
+
+            result += "【相談】" + h
+
+    return result
+
 
 # ==========================
 # 利用ログ
